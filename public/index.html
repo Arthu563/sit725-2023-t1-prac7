@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EV Charging Station</title>
+  <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"></script>
+</head>
+<body>
+  <h1>EV Charging Station</h1>
+  <ul id="chargingStationsList"></ul>
+
+  <script>
+    const socket = io();
+
+    // Listen for updates to the charging stations list
+    socket.on('chargingStations', (chargingStations) => {
+      const stationsList = document.getElementById('chargingStationsList');
+      stationsList.innerHTML = '';
+
+      Object.entries(chargingStations).forEach(([stationName, station]) => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${stationName}: ${station.status}`;
+        stationsList.appendChild(listItem);
+      });
+    });
+
+    // Simulate a new EV charging station request
+    const stationName = prompt('Enter a new charging station name:');
+    if (stationName) {
+      socket.emit('requestStation', stationName);
+    }
+  </script>
+</body>
+</html>
